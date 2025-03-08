@@ -31,6 +31,34 @@ jobs:
 
       - name: 🧪 Run unit tests
         run: vendor/bin/phpunit
+# New Dusk setup section starts here
+      - name: 🌓 Install Chrome Driver
+        run: php artisan dusk:chrome-driver
+
+      - name: 🖥️ Start Chrome Driver
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux &
+
+      - name: 🏃 Start Laravel Server
+        run: php artisan serve --no-reload &
+
+      - name: 📸 Run Dusk tests to take screenshots
+        run: |
+          mkdir -p dusk-screenshots
+          php artisan dusk --filter=CaptureScreenshotTest
+        env:
+          DUSK_SCREENSHOT_DIR: dusk-screenshots
+
+      - name: 📦 Package screenshots
+        run: |
+          zip -r app-screenshots.zip dusk-screenshots
+
+      - name: 📤 Upload screenshots to GitHub Packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-screenshots-${{ github.sha }}
+          path: app-screenshots.zip
+          if-no-files-found: warn
+      # Dusk section ends
 
       - name: 📦 Install production dependencies only
         run: composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
