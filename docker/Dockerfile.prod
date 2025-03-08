@@ -26,6 +26,7 @@ WORKDIR /var/www
 
 COPY . /var/www/
 
+COPY .env.example .env
 # Install dependencies
 RUN composer install --optimize-autoloader --no-dev
 RUN npm install && npm run build
