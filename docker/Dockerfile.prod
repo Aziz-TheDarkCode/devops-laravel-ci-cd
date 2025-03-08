@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
+    libpq-dev \
+    php-pgsql \
     npm
 
 # Clear cache
